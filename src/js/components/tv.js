@@ -278,8 +278,8 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
       <p>Free 21 days to return</p>
       </div>
       <div class="installation">
-        <img src="https://images.samsung.com/is/image/samsung/assets/uk/smartphonepcd/Drill.png"/>
-      <p>Installation available</p>
+        <img src="https://images.samsung.com/is/image/samsung/assets/uk/smartphonepcd/icon_pay.png"/>
+      <p>Flexiable Finance</p>
       </div>
     </div>
   </div>
