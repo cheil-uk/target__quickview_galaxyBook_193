@@ -123,7 +123,9 @@ export default class Tv {
           const seeMoreLink = boxFinder.querySelector(".product-card-v2__cta").firstChild;
           const image = boxFinder.querySelector('.image__main');
           const nameText = boxFinder.querySelector('.product-card-v2__name-text');
+
           if (sku === currentSku){
+
             this.notAvaliablePopUp(name, currentSku, rating, features, seeMoreLink, image, nameText)
           }
         }
@@ -143,6 +145,15 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
   const save =  price - promoPrice;
   const hiResImage = image.replace('$THUB_SHOP_S$', '$PD_SHOP_JPG$');
 
+  function buyNowUrlRedirect() {
+    const buyNowBtns = document.querySelectorAll('.js-buy-now');
+    buyNowBtns.forEach((buyNowbtn) => {
+      const buyNowModelCode = buyNowbtn.getAttribute('data-modelcode');
+      if (buyNowModelCode === modelCode) {
+        buyNowbtn.click();
+      }
+    })
+  }
 
   const btnSizes = () => {
     const container = document.querySelector('.button__sizes');
@@ -163,13 +174,17 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     const container = document.querySelector('.offer__blocks');
     benefits.forEach((offers, i) => {
       if (i <= 1 ) {
-        const description = ( offers.title === undefined ) ? `<a style="color: black" href="${exUrl}">Learn More</a>` : offers.title;
+        const description = ( offers.title === undefined ) ? `<a class="buy_page_link-redirect" style="color: black" href="javascript:void(0)">See more offers here</a>` : offers.description;
         const div = document.createElement('div');
         div.classList.add('descripton');
 
         div.innerHTML = description;
 
+        div.firstChild.addEventListener('click', () => {
+          buyNowUrlRedirect();
+        })
         return container.append(div);
+
       }
     });
   }
@@ -188,25 +203,30 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
           div.classList.add('add__to__basket');
           div.innerHTML = buyNow;
 
-          div.onclick = () => {
-            $.ajax({
-                      type: 'POST',
-                      url: 'https://p1-smn2-api-cdn.shop.samsung.com/tokocommercewebservices/v2/uk/addToCart/multi?fields=BASIC',
-                      data: JSON.stringify([{
-                        productCode: buyNowModelCode,
-                        qty: qty,
-                        services: []
-                      }]),
-                      contentType: 'application/json',
-                      xhrFields: {
-                          withCredentials: true
-                      },
-                      success: (res) => {
-                        console.log(res)
-                        window.location.replace('https://shop.samsung.com/uk/cart')
-                      }
-                  });
-          }
+
+
+        //   div.onclick = () => {
+        //     $.ajax({
+        //               type: 'POST',
+        //               url: 'https://p1-smn2-api-cdn.shop.samsung.com/tokocommercewebservices/v2/uk/addToCart/multi?fields=BASIC',
+        //               data: JSON.stringify([{
+        //                 productCode: buyNowModelCode,
+        //                 qty: qty,
+        //                 services: []
+        //               }]),
+        //               contentType: 'application/json',
+        //               xhrFields: {
+        //                   withCredentials: true
+        //               },
+        //               success: (res) => {
+        //                 console.log(res)
+        //                 window.location.replace('https://shop.samsung.com/uk/cart')
+        //               }
+        //           });
+        //     }
+        div.firstChild.addEventListener('click', () => {
+          buyNowUrlRedirect();
+        })
         return container.append(div);
       }
     });
@@ -227,6 +247,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     ul.setAttribute('role', 'list');
 
       features.map((feature, i) => {
+
       let index = i
       let li = document.createElement('li');
       li.classList.add('dot-list__item');
@@ -235,12 +256,16 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
         `<svg class="icon" focusable="false" viewBox="0 0 96 96">
           <path d="M48 32c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16z"></path>
         </svg>
-        <span class="usp-text">${feature.title}</span>`;
+        <span class="usp-text">${feature.title }</span>`;
+
       if (index > -1 && index < 5) {
         ul.appendChild(li);
       } else if (feature.uid.includes('RB29FWRNDBC/EU') && index > 2) {
         ul.appendChild(li);
       }
+
+    (li.querySelector('.usp-text').innerText === '\xa0' || '') ? li.querySelector('.usp-text').parentElement.style.display = 'none' : li.querySelector('.usp-text');
+
     }).join('');
 
     return ul.innerHTML;
@@ -287,8 +312,9 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
       <p class="promotion-card-v2__sub-headline-text">${name}</p>
       <small>${modelCode}</small>
       <div class="reviews">
-          <div class="stars">
-              ${stars(rating)}<p><strong>(${proRating})</strong></p>
+      ${console.log(typeof rating, stars(rating))}
+          <div class="stars" style="display: none">
+               ${stars(rating)}<p><strong>(${proRating})</strong></p>
           </div>
         </div>
       <ul class="dot-list" role="list">

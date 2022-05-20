@@ -117,7 +117,7 @@ export default class ChangeBtn {
     exUrl,
     baseCode,
     proRating);
-    console.log(tvProducts, tvOffers);
+    // console.log(tvProducts, tvOffers);
     })
     )
     .catch(err => {
@@ -133,8 +133,9 @@ export default class ChangeBtn {
           const seeMoreLink = boxFinder.querySelector(".product-card-v2__cta").firstChild;
           const image = boxFinder.querySelector('.image__main');
           const nameText = boxFinder.querySelector('.product-card-v2__name-text');
+
           if (sku === currentSku){
-            // console.log(name, currentSku, rating, features, seeMoreLink, image)
+
             this.notAvaliablePopUp(name, currentSku, rating, features, seeMoreLink, image, nameText)
           }
         }
@@ -153,6 +154,16 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
   const monthlyPrice = promoPrice/36;
   const save =  price - promoPrice;
   const hiResImage = image.replace('$THUB_SHOP_S$', '$PD_SHOP_JPG$');
+
+  function buyNowUrlRedirect() {
+    const buyNowBtns = document.querySelectorAll('.js-buy-now');
+    buyNowBtns.forEach((buyNowbtn) => {
+      const buyNowModelCode = buyNowbtn.getAttribute('data-modelcode');
+      if (buyNowModelCode === modelCode) {
+        buyNowbtn.click();
+      }
+    })
+  }
 
   const btnSizes = () => {
     const container = document.querySelector('.button__sizes');
@@ -173,7 +184,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     const container = document.querySelector('.offer__blocks');
     benefits.forEach((offers, i) => {
       if (i <= 1 ) {
-        const description = ( offers.title === undefined ) ? `<a style="color: black" href="${exUrl}">Learn More</a>` : offers.title;
+        const description = ( offers.title === undefined ) ? `<a style="color: black" href="${exUrl}">Learn More</a>` : offers.description;
         const div = document.createElement('div');
         div.classList.add('descripton');
 
@@ -192,34 +203,36 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
       const buyNowModelCode = buyNowbtn.getAttribute('data-modelcode');
       const qty = buyNowbtn.getAttribute('data-modelqty');
 
-
-
       if (buyNowModelCode === modelCode) {
         const buyNow = buyNowbtn.outerHTML;
         const div = document.createElement('div');
         div.classList.add('add__to__basket');
         div.innerHTML = buyNow;
 
-        div.onclick = () => {
-          $.ajax({
-                    type: 'POST',
-                    url: 'https://p1-smn2-api-cdn.shop.samsung.com/tokocommercewebservices/v2/uk/addToCart/multi?fields=BASIC',
-                    data: JSON.stringify([{
-                      productCode: buyNowModelCode,
-                      qty: qty,
-                      services: []
-                    }]),
-                    contentType: 'application/json',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    success: (res) => {
-                      console.log(res)
-                      window.location.replace('https://shop.samsung.com/uk/cart')
-                    }
-                });
-        }
 
+      //   div.onclick = () => {
+      //     $.ajax({
+      //               type: 'POST',
+      //               url: 'https://p1-smn2-api-cdn.shop.samsung.com/tokocommercewebservices/v2/uk/addToCart/multi?fields=BASIC',
+      //               data: JSON.stringify([{
+      //                 productCode: buyNowModelCode,
+      //                 qty: qty,
+      //                 services: []
+      //               }]),
+      //               contentType: 'application/json',
+      //               xhrFields: {
+      //                   withCredentials: true
+      //               },
+      //               success: (res) => {
+      //                 console.log(res)
+      //                 window.location.replace('https://shop.samsung.com/uk/cart')
+      //               }
+      //           });
+      //   }
+      // div.firstChild.innerText = 'Add to basket';
+      div.firstChild.addEventListener('click', () => {
+          buyNowUrlRedirect();
+        })
       return container.append(div);
       }
 
@@ -243,6 +256,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     ul.setAttribute('role', 'list');
 
       features.map((feature, i) => {
+
       let index = i
       let li = document.createElement('li');
       li.classList.add('dot-list__item');
@@ -257,6 +271,9 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
       } else if (feature.uid.includes('RB29FWRNDBC/EU') && index > 2) {
         ul.appendChild(li);
       }
+
+      (li.querySelector('.usp-text').innerText === '\xa0' || '') ? li.querySelector('.usp-text').parentElement.style.display = 'none' : li.querySelector('.usp-text');
+
     }).join('');
 
     return ul.innerHTML;
@@ -303,7 +320,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
       <p class="promotion-card-v2__sub-headline-text">${name}</p>
       <small>${modelCode}</small>
       <div class="reviews">
-          <div class="stars">
+          <div class="stars" style="display: none">
               ${stars(rating)}<p><strong>(${proRating})</strong></p>
           </div>
         </div>
