@@ -184,11 +184,15 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     const container = document.querySelector('.offer__blocks');
     benefits.forEach((offers, i) => {
       if (i <= 1 ) {
-        const description = ( offers.title === undefined ) ? `<a style="color: black" href="${exUrl}">Learn More</a>` : offers.description;
+        const description = ( offers.title === undefined ) ? `<a class="buy_page_link-redirect" style="color: black" href="javascript:void(0)">See more offers here</a>` : offers.description;
         const div = document.createElement('div');
         div.classList.add('descripton');
 
         div.innerHTML = description;
+
+         div.firstChild.addEventListener('click', () => {
+          buyNowUrlRedirect();
+        })
 
         return container.append(div);
       }
@@ -235,9 +239,6 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
         })
       return container.append(div);
       }
-
-
-
     });
   }
 
@@ -344,7 +345,8 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
 
         </div>
       </div>
-      <div class="offer__container">
+
+      <div class="offer__container" style="${(benefits === undefined || benefits.length == 0 ) ? `display:none` : `display:block`}">
         <h3 class="pd-select-option__headline">Offer</h3>
         <div class="offer__blocks">
 

@@ -337,7 +337,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
 
         </div>
       </div>
-      <div class="offer__container">
+      <div class="offer__container" style="${(benefits === undefined || benefits.length == 0 ) ? `display:none` : `display:block`}">
         <h3 class="pd-select-option__headline">Offer</h3>
         <div class="offer__blocks">
         </div>
