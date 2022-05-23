@@ -174,7 +174,7 @@ popUp(name, modelCode, variants, rating, features, price, promoPrice, image, ben
     const container = document.querySelector('.offer__blocks');
     benefits.forEach((offers, i) => {
       if (i <= 1 ) {
-        const description = ( offers.title === undefined ) ? `<a class="buy_page_link-redirect" style="color: black" href="javascript:void(0)">See more offers here</a>` : offers.description;
+        const description = ( offers.title === undefined ) ? `<a class="buy_page_link-redirect" style="color: black" href="javascript:void(0)">See all current offers</a>` : offers.description;
         const div = document.createElement('div');
         div.classList.add('descripton');
 
